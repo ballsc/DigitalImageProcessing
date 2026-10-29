@@ -6,10 +6,13 @@
 % Outputs: eq_img - equalized color image
 %
 
-function eq_img = color_equalization(img)
+function eq_img = color_equalization(img, sat_scale)
     img_hsv = rgb2hsv(img);
-    s = img_hsv(:, 2);
-    s_eq = histeq(s, numel(unique(s)));
-    img_hsv = [img_hsv(:, 1), s_eq, img_hsv(:, 3)];
+    h = img_hsv(:, :, 1);
+    s = img_hsv(:, :, 2);
+    v = img_hsv(:, :, 3);
+    v_eq = histeq(v, numel(unique(v)));
+    s_scaled = s*sat_scale;
+    img_hsv = reshape([h, s_scaled, v_eq], size(img));
     eq_img = hsv2rgb(img_hsv);
 end
